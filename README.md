@@ -4,6 +4,7 @@
 * npm i 
 * npm start 
 
+-L nodemon run on port 3001
 
 # api endpoints
 
