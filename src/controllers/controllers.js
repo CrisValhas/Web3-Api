@@ -1,30 +1,11 @@
 const axios = require('axios');
 require('dotenv').config();
-// const API_KEY = process.env.API_KEY;
+const API_KEY = process.env.API_KEY;
+const API_KEY_3 = process.env.API_KEY_3;
 const Web3 = require('web3');
-const API_KEY_3 = "71GJXN9WE5G4R25B7AA64FSADSRPG83CG8";
-const API_KEY = "f44b176e73704d0e860aba5b7f8c4942";
+
 
 const transactionChecker = async (req, res, next) => {
-    //  try {
-    //         const { walletAdress } = req.body;
-    //         const { contractAdress } = req.body;
-    //         let fromBlock = 0;
-    //         let toBlock = 16148120;
-    //         let page = 1;
-    //         //chequeo tener los datos necesarios
-    //         if (walletAdress === undefined || contractAdress === undefined) {
-    //             console.log('Wallet or contract adress is not valid');
-    //             return res.status(400).json({ error: 'Wallet or contract adress is not valid' });
-    //          }
-    //          let transaction = await axios.get(
-    //              `https://api.etherscan.io/api?module=logs&action=getLogs&address=0xbd3531da5cf5857e7cfaa92426877b022e612cf8&fromBlock=12878196&toBlock=12878196&page=1&offset=1000&apikey=${API_KEY}`);
-    //              return res.status(200).json(transaction.data);
-    //                  console.log(transaction);
-    //              } catch (error) {
-    //                  return next(error)
-    //              }
-
     const { walletAdress } = req.body;
     const { contractAdress } = req.body;
     //chequeo tener los datos necesarios
@@ -34,8 +15,8 @@ const transactionChecker = async (req, res, next) => {
     }
     console.log('lets find the transaction...');
     //inicializo el provider infura y las variables necesarias//
-    let Web3 = require('web3');
-    let provider = 'https://mainnet.infura.io/v3/' + API_KEY;
+    // let Web3 = require('web3');
+    let provider = 'https://mainnet.infura.io/v3/'+API_KEY;
     let web3Provider = new Web3.providers.HttpProvider(provider);
     let web3 = new Web3(web3Provider);
     let number = 0;
@@ -84,6 +65,7 @@ const transactionChecker = async (req, res, next) => {
         let block = await web3.eth.getBlock("latest");
         if (block != null && block.transactions != null) {
             number = block.number;
+            console.log("searching in block "+ block.numer)
             findBlock();
         }
         else {
@@ -227,6 +209,8 @@ const apiMoreTransaction = async (req, res, next) => {
                     });
                 };
             };
+        }else{
+            return res.status(400).json({message: "error wallet adress format , must be an Array"});
         };
 
         let util = [];
@@ -241,4 +225,10 @@ const apiMoreTransaction = async (req, res, next) => {
         return next(error)
     };
 };
-module.exports = { transactionChecker, moreTransactionChecker, apiLastTransaction, apiMoreTransaction };
+
+module.exports = { 
+    transactionChecker,
+    moreTransactionChecker,
+    apiLastTransaction,
+    apiMoreTransaction 
+};
